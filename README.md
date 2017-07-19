@@ -1,6 +1,6 @@
 ## Building a DOM game with HTML Custom Elements
 
-This is a small experiment showing how to use HTML Custom Elements to build a game in the DOM.
+This is a small experiment showing how to invent your own HTML Elements to build a game in the DOM.
 
 ![screenshot](docs/images/screenshot.png)
 
