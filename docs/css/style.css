@@ -1,0 +1,31 @@
+html, body {
+    background-color: #70CF51;
+    overflow:hidden;
+    color:white;
+    margin:0px; padding:0px;
+    background-image: url('../images/road.png');
+    background-repeat: repeat;
+}
+
+body * {
+    position: absolute;
+    display: block;
+    margin:0px; padding:0px;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+}
+
+car-component {
+	width:168px; height:108px;
+	background-image: url('../images/car.png');
+}
+
+player-component {
+    width:61px; height:102px;
+    background-image: url('../images/player.png');
+}
+
+crash-component {
+	width:169px; height:112px;
+	background-image: url('../images/crash.png');
+}

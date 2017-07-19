@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "sourceMap":  true,
+        "removeComments": true,
+        "target":"es6",
+        "watch": true,
+        "outFile": "docs/js/main.js"
+    },
+    "exclude": [
+        "node_modules",
+        "docs"
+    ]
+}
