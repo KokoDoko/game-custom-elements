@@ -6,7 +6,7 @@ This is a small experiment showing how to invent your own HTML Elements to build
 
 ### What are these custom elements?
 
-A custom element is an HTML Element that allows you to add your own properties and methods. In this experiment we have an element `Car` that has an x,y position and an update method:
+A custom element is an HTML Element that allows you to add your own properties and methods. In this experiment we have an element `Car` that has an `x` and `y` property and an `update()` method:
 
 ```
 class Car extends HTMLElement {
@@ -24,12 +24,19 @@ class Car extends HTMLElement {
     }
 }
 ```
-You have to register custom elements. Note that the html tag needs to contain a hyphen:
+Before we can add our Car element to the DOM, we have to register it, connecting our class to a HTML tag. Note that the html tag needs to contain a hyphen:
 ```
 window.customElements.define("car-component", Car);
 ```
 
-Now you can create a new instance of your custom element, and add it to the DOM:
+Now you can add cars to the dom by placing tags:
+```
+<body>
+    <car-component></car-component>
+</body>
+```
+
+In our game we prefer to add cars by code. We can create a new instance of `Car` and add it to the DOM in one line:
 ```
 document.body.appendChild(new Car());
 ```
