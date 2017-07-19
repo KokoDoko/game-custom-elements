@@ -6,7 +6,9 @@ This is a small experiment showing how to invent your own HTML Elements to build
 
 ### What are these custom elements?
 
-A custom element is an HTML Element that allows you to add your own properties and methods. In this experiment we have an element `Car` that has an `x` and `y` property and an `update()` method:
+A custom element is an HTML Element that allows you to add your own properties and methods. For example, the basic [HTMLElement](https://developer.mozilla.org/en/docs/Web/API/HTMLElement) has a `style` property and a `click()` method. By extending the HTML Element we get all this existing functionality and we can add our own.
+
+In this experiment we have an element `Car` that has an `x` and `y` property and an `update()` method:
 
 ```
 class Car extends HTMLElement {
