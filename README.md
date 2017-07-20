@@ -165,6 +165,10 @@ This experiment is built with Typescript, but you can easily rebuild it in pure 
 
 To compile this project you can install Typescript with `npm install -g typescript`, and then type `tsc -p` in the terminal in the project folder.
 
+### Browser support
+
+The above experiment works in Safari and Chrome. Extending specific elements such as HTMLButtonElement doesn't work in any browser yet. Use the [polyfill](https://github.com/webcomponents/custom-elements/blob/master/custom-elements.min.js) to get support in all browsers.
+
 ### For of loop in NodeList
 
 The `for of` loop is not yet supported for `NodeList` and `HTMLCollection` in Safari and Firefox, because they are technically not arrays. Enable it with:
