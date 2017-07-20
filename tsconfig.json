@@ -3,6 +3,7 @@
         "sourceMap":  true,
         "removeComments": true,
         "target":"es6",
+        "strict": true,
         "watch": true,
         "outFile": "docs/js/main.js"
     },
