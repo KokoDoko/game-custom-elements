@@ -1,12 +1,12 @@
 ## Custom Elements
 
-By using web components, we can create game objects that are also DOM objects. This makes it much easier to add and remove elements to the Game. 
+By using web components, we can create game objects that are also DOM objects. This makes it much easier to add and remove elements to a DOM Game. 
 
 ![screenshot](docs/images/screenshot.png)
 
 ### What are Web Components?
 
-A web component is a HTML element that allows us to add our own code. Note that in this example, the Car adds itself to the DOM using `appendChild(this)`
+A web component is a HTML element that allows us to add our own code. This example creates an HTML element that has a `drive()` method. The element also adds itself to the DOM!
 
 ```
 class Car extends HTMLElement {
@@ -34,22 +34,6 @@ this.car.drive()
 
 This will result in a `<car-component></car-component>` being added to your HTML structure, and the message `VROOM!` will appear in the console. 
 
-### Lifecycle
-
-A custom element has lifecycle hooks: these methods get called automatically when the Car is added to, or removed from, the DOM.
-```
-class Car extends HTMLElement {
-
-    public connectedCallback(): void {
-        console.log("A car was added to the DOM");
-    }
-
-    public disconnectedCallback():void{
-        console.log("hey! someone removed me from the DOM!");
-    }
-}
-```
-
 ### Game Loop
 
 Our game class will create a array of cars and start the game loop. A game loop updates our game elements 60 times per second using `requestAnimationFrame`. 
@@ -65,6 +49,22 @@ class Game {
 	    c.drive()
 	}
         requestAnimationFrame(()=>this.update())
+    }
+}
+```
+
+### Lifecycle
+
+A custom element has lifecycle hooks: these methods get called automatically when the Car is added to, or removed from, the DOM.
+```
+class Car extends HTMLElement {
+
+    public connectedCallback(): void {
+        console.log("A car was added to the DOM");
+    }
+
+    public disconnectedCallback():void{
+        console.log("hey! someone removed me from the DOM!");
     }
 }
 ```
@@ -99,7 +99,7 @@ this.cars.splice(index, 1)       // remove reference
 
 ### Style
 
-Note that the styling of our custom elements is entirely done in CSS.
+The styling of custom elements is done in CSS.
 
 ```
 car-component {
