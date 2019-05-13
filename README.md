@@ -90,8 +90,11 @@ class Car {
 Note that if you keep references to the car in your `Game` class, you need to remove those too!
 ```
 this.cars = [new Car(), new Car(), new Car()]
-this.cars[0].remove()   // remove from DOM
-this.cars.splice(0,1)   // remove from array
+
+// we will remove car 0 from the game
+let index = 0
+this.cars[index].remove()        // remove element from DOM
+this.cars.splice(index, 1)       // remove reference
 ```
 
 ### Style
