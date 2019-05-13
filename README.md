@@ -1,58 +1,47 @@
-## Building a DOM game with HTML Custom Elements
+## Custom Elements
 
-This is a small experiment showing how to invent your own HTML Elements to build a game in the DOM.
+By using web components, we can create game objects that are also DOM objects. This makes it much easier to add and remove elements to the Game. 
 
 ![screenshot](docs/images/screenshot.png)
 
-### What are these custom elements?
+### What are Web Components?
 
-A custom element is an HTML Element that allows you to add your own properties and methods. For example, the basic [HTMLElement](https://developer.mozilla.org/en/docs/Web/API/HTMLElement) has a `style` property and a `click()` method. By extending the HTML Element we get all this existing functionality and we can add our own.
-
-In this experiment we have an element `Car` that has an `x` and `y` property and an `update()` method:
+A web component is a HTML element that allows us to add our own code. Note that in this example, the Car adds itself to the DOM using `appendChild(this)`
 
 ```
 class Car extends HTMLElement {
 
-    public x: number;
-    public y: number;
-
     constructor(){
-        super();
-        console.log("A car was created!");
+        super()
+        document.body.appendChild(this)
     }
-
-    public update(): void {
-        console.log("The car's update method was called!");
+    
+    drive(){
+        console.log("VROOM!")
     }
 }
 ```
-Before we can add our Car element to the DOM, we have to register it, connecting our class to a HTML tag. Note that the html tag needs to contain a hyphen:
+To use web components, they have to be registered. Note that the html tag needs to contain a hyphen:
 ```
 window.customElements.define("car-component", Car);
 ```
 
-Now you can add cars to the dom by placing tags:
+In our Game class, we can now create `new Car()` and it will automatically become a DOM element.
 ```
-<body>
-    <car-component></car-component>
-</body>
-```
-
-In our game we prefer to add cars by code. We can create a new instance of `Car` and add it to the DOM in one line:
-```
-document.body.appendChild(new Car());
+this.car = new Car()
+this.car.drive()
 ```
 
-This will result in a `<car-component></car-component>` being added to your HTML structure, and the message `A car was created!` will appear in the console. This HTML Element will have an `x` and `y` property and an `update()` method.
+This will result in a `<car-component></car-component>` being added to your HTML structure, and the message `VROOM!` will appear in the console. 
 
 ### DOM manipulation
 
-You can query your HTML document for car components, and use the new `for of` loop to call their `update()` method.
+Ideally, your game keeps track of all existing cars, but you can also query the DOM for car components. Note that this query returns a NodeList instead of an Array.
 ```
-let cars : NodeListOf<Car> = document.getElementsByTagName("car-component") as NodeListOf<Car>;
+let cars : NodeListOf<Car> = document.querySelector("car-component") as NodeListOf<Car>;
 
 for(let c of cars){
-    c.update();
+    c.drive()
 } 
 ```
 
@@ -74,106 +63,75 @@ class Car extends HTMLElement {
 
 ### Game Loop
 
-Our game class will create a player element and start the game loop. A game loop updates our game elements 60 times per second using `requestAnimationFrame`. 
-
-- The game loop will add a `new Car()` to the DOM every second by using the modulo operator.
-- The game loop will find all `<car-component>` tags and call their update method.
-
-The game is instantiated with `new Game()` after window.load. Note that the Game class itself doesn't need to extend HTMLElement.
+Our game class will create a array of cars and start the game loop. A game loop updates our game elements 60 times per second using `requestAnimationFrame`. 
 
 ```
 class Game {
-    
-    private counter:number = 0;
-     
+    cars : Car[]
     constructor() {
-        document.body.appendChild(new Player());
-        requestAnimationFrame(() => this.gameLoop());
+        this.cars = [new Car(), new Car(), new Car()]
     }
-    
-    private gameLoop(){
-        this.counter++;
-        if(this.counter%60 == 0) {
-            document.body.appendChild(new Car());
-        }
-
-        let cars : NodeListOf<Car> = document.getElementsByTagName("car-component") as NodeListOf<Car>;
-
-        for(let c of cars){
-            c.update();
-        } 
-
-        requestAnimationFrame(() => this.gameLoop());
+    update(){
+        for(let c of this.cars) {
+	    c.drive()
+	}
+        requestAnimationFrame(()=>this.update())
     }
 }
-
-window.addEventListener("load", function() {
-    new Game();
-});
 ```
 
 ### Removing cars
 
-When a car leaves the screen or hits the player, we can easily remove it. Since the car extends from HTMLElement we can use the `remove()` method, which removes it from the DOM. The game loop won't call the update method anymore, and if we want, we could use the `disconnectedCallback()` to execute some final code before the car is completely removed.
+Since the car extends from HTMLElement we can use the `remove()` method, which removes it from the DOM. 
 
 ```
-public disconnectedCallback():void{
-    console.log("the car is removed from the game!");
+let c = new Car()      // adds car to the DOM
+c.remove()             // removes car from the DOM
+```
+
+We can use the `disconnectedCallback()` to execute some final code before the car is removed from the DOM.
+
+```
+class Car {
+   public disconnectedCallback():void{
+       console.log("this car is about to be removed from the game!");
+   }
 }
-
-public update(): void {
-    this.x += this.speed;
-
-    if (this.x > window.innerWidth) {
-        this.remove();
-    }
-}
+```
+Note that if you keep references to the car in your `Game` class, you need to remove those too!
+```
+this.cars = [new Car(), new Car(), new Car()]
+this.cars[0].remove()   // remove from DOM
+this.cars.splice(0,1)   // remove from array
 ```
 
-### Styling and animation
+### Style
 
-Note that the styling of our custom elements is entirely done in CSS. First we declare that ALL document elements are going to use `position:absolute`, and then we declare a size and a background image for each individual element:
+Note that the styling of our custom elements is entirely done in CSS.
 
 ```
-body * {
+car-component {
     position: absolute;
     display: block;
-    margin:0px; padding:0px;
-    box-sizing: border-box;
-    background-repeat: no-repeat;
-}
-
-car-component {
-	width:168px; height:108px;
-	background-image: url('../images/car.png');
+    width:168px; height:108px;
 }
 ```
-
 We position our elements using `css transform`, so that we can use the GPU for smooth animation.
 
 ```
-this.style.transform = `translate(${this.x}px, ${this.y}px)`;
+update() {
+    this.style.transform = `translate(${this.x}px, ${this.y}px)`
+}
 ```
-
-### Extending other elements
-
-This example only uses `extends HTMLElement`, but we could also extend a `HTMLDivElement`, `HTMLButtonElement`, etc. In this example, all our elements are treated as `<div>` by simply setting `display:block` in the CSS.
-
-### Typescript
-
-This experiment is built with Typescript, but you can easily rebuild it in pure Javascript by removing the type information. You can check the `main.js` file to see the Javascript equivalent. 
-
-To compile this project you can install Typescript with `npm install -g typescript`, and then type `tsc -p` in the terminal in the project folder.
 
 ### Browser support
 
-The above experiment works in Safari and Chrome. Extending specific elements such as HTMLButtonElement doesn't work in any browser yet. Use the [polyfill](https://github.com/webcomponents/custom-elements/blob/master/custom-elements.min.js) to get support in all browsers.
-
-### For of loop in NodeList
-
-The `for of` loop is not yet supported for `NodeList` and `HTMLCollection` in Safari and Firefox, because they are technically not arrays. Enable it with:
+To compile typescript with custom components, set the compile target to `es6` in `tsconfig.json`. Note that not all browsers support custom components fully. 
 
 ```
-NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
-HTMLCollection.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
+{
+    "compilerOptions": {
+        "target": "es6"
+    }
+}
 ```
