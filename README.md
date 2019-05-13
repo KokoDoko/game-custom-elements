@@ -34,17 +34,6 @@ this.car.drive()
 
 This will result in a `<car-component></car-component>` being added to your HTML structure, and the message `VROOM!` will appear in the console. 
 
-### DOM manipulation
-
-Ideally, your game keeps track of all existing cars, but you can also query the DOM for car components. Note that this query returns a NodeList instead of an Array.
-```
-let cars : NodeListOf<Car> = document.querySelector("car-component") as NodeListOf<Car>;
-
-for(let c of cars){
-    c.drive()
-} 
-```
-
 ### Lifecycle
 
 A custom element has lifecycle hooks: these methods get called automatically when the Car is added to, or removed from, the DOM.
@@ -122,6 +111,17 @@ We position our elements using `css transform`, so that we can use the GPU for s
 update() {
     this.style.transform = `translate(${this.x}px, ${this.y}px)`
 }
+```
+
+### DOM query
+
+Ideally, your game keeps track of all existing cars, but you can also query the DOM for car components. Note that this query returns a NodeList instead of an Array.
+```
+let cars : NodeListOf<Car> = document.querySelector("car-component") as NodeListOf<Car>;
+
+for(let c of cars){
+    c.drive()
+} 
 ```
 
 ### Browser support
